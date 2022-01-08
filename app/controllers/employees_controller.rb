@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  before_action :authorized, :set_employee, only: [:show, :update, :destroy]
+  before_action :authorized, :set_employee, only: [:show]
 
   # GET /employees
   def index
@@ -15,7 +15,6 @@ class EmployeesController < ApplicationController
   # POST /employees
   def create
     @employee = Employee.new(employee_params)
-    @employee.user_id = @user.id
     if @employee.save
       render json: @employee, status: :created, location: @employee
     else
@@ -25,6 +24,7 @@ class EmployeesController < ApplicationController
 
   # PATCH/PUT /employees/1
   def update
+    @employee = Employee.find(params[:id])
     if @employee.update(employee_params)
       render json: @employee
     else
@@ -34,6 +34,7 @@ class EmployeesController < ApplicationController
 
   # DELETE /employees/1
   def destroy
+    @employee = Employee.find(params[:id])
     @employee.destroy
   end
 
@@ -45,6 +46,6 @@ class EmployeesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def employee_params
-      params.require(:employee).permit(:name, :title, :office, :team, :departing, :onboarding, :trained, :access, :equipment, :remote, :notes, :hire_date, :term_date, :img)
+      params.require(:employee).permit(:name, :title, :office, :team, :departing, :onboarding, :trained, :access, :equipment, :remote, :notes, :hire_date, :term_date, :img, :id, :manager, :assignee)
     end
 end
